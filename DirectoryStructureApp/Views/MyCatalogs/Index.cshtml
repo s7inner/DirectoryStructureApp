@@ -1,0 +1,18 @@
+﻿@model List<DirectoryStructureApp.Models.MyCatalog>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+@foreach (var catalog in Model)
+{
+    <h1>"Folder" - @catalog.Name</h1>
+    <ul>
+        @foreach (var childCatalog in catalog.Children)
+        {
+            <li><h2><a href="@Url.Action("Details", "MyCatalogs", new { id = childCatalog.Id })">@childCatalog.Name</a></h2></li>
+        }
+    </ul>
+}
+
+
