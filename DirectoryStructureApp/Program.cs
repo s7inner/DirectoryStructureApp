@@ -1,15 +1,16 @@
 using DirectoryStructureApp.Data;
 using DirectoryStructureApp.Interfaces;
 using DirectoryStructureApp.Repositories;
+using DirectoryStructureApp.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 
-// Add services to the container.
+// AddListCatalogs services to the container.
 builder.Services.AddControllersWithViews().AddRazorRuntimeCompilation();
 
-// Add services to the container.
+// AddListCatalogs services to the container.
 builder.Services.AddRazorPages();
 
 // ConnectionString
@@ -19,6 +20,7 @@ builder.Services.AddDbContext<CatalogDbContext>(options =>
     );
 
 builder.Services.AddScoped<IMyCatalogRepository, MyCatalogRepository>();
+builder.Services.AddScoped<IJsonFileService, JsonFileService>();
 
 
 var app = builder.Build();
@@ -44,6 +46,7 @@ app.MapControllerRoute(
 
 app.MapRazorPages();
 
+//при першому запуску заповнює бд вхідними даними
 using (var scope = app.Services.CreateScope())
 {
     var serviceProvider = scope.ServiceProvider;
@@ -57,6 +60,5 @@ using (var scope = app.Services.CreateScope())
         // log the error
     }
 }
-
 
 app.Run();

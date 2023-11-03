@@ -2,18 +2,70 @@
 using Microsoft.EntityFrameworkCore;
 using DirectoryStructureApp.Data;
 using DirectoryStructureApp.Models;
+using DirectoryStructureApp.Interfaces;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace DirectoryStructureApp.Controllers
 {
     public class MyCatalogsController : Controller
     {
         private readonly CatalogDbContext _context;
+        private readonly IJsonFileService _jsonFileService;
+        private readonly IMyCatalogRepository _myCatalogRepository;
 
-        public MyCatalogsController(CatalogDbContext context)
+        public MyCatalogsController(CatalogDbContext context, IJsonFileService jsonFileService, IMyCatalogRepository myCatalogRepository)
         {
             _context = context;
+            _jsonFileService = jsonFileService;
+            _myCatalogRepository = myCatalogRepository;
         }
 
+        [HttpPost]
+        [Route("MyCatalogs/SaveMyCatalogsToJsonFile")]
+        public async Task<IActionResult> SaveFile(string filePath)
+        {
+            await _jsonFileService.SaveMyCatalogsToJsonFile(filePath);
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [Route("MyCatalogs/ImportDataFromJsonFile")]
+        public IActionResult ImportDataFromJsonFile(IFormFile file)
+        {
+            try
+            {
+                _jsonFileService.ImportDataFromJsonFile(file);
+                return RedirectToAction("Index");
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error: {ex.Message}");
+            }
+        }
+
+
+        [HttpPost]
+        [Route("MyCatalogs/DeleteAllCatalogs")]
+        public IActionResult DeleteAllCatalogs()
+        {
+            _myCatalogRepository.DeleteAllMyCatalogs();
+            return RedirectToAction("Index"); // Направлення на метод "Index" або іншу відповідну дію
+        }
+
+        [HttpPost]
+        [Route("MyCatalogs/ImportDataFromJson")]
+        public IActionResult ImportDataFromJson(IFormFile file)
+        {
+            return null;
+        }
+
+
+       
         public IActionResult Index()
         {
             var topLevelCatalogs = _context.MyCatalogs.Where(c => c.MyCatalogId == null).Include(c => c.Children).ToList();

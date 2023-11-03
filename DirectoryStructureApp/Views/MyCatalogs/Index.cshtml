@@ -15,4 +15,15 @@
     </ul>
 }
 
+<form action="/MyCatalogs/DeleteAllCatalogs" method="post" enctype="multipart/form-data">
+    <button type="submit">DeleteAllCatalogs</button>
+</form>
 
+<form action="/MyCatalogs/ImportDataFromJsonFile" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" />
+    <input type="submit" value="Upload" />
+</form>
+
+<form action="/MyCatalogs/SaveMyCatalogsToJsonFile" method="post" enctype="multipart/form-data">
+    <button type="submit">SaveToJson</button>
+</form>

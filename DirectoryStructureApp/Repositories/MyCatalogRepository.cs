@@ -1,7 +1,6 @@
 ﻿using DirectoryStructureApp.Data;
 using DirectoryStructureApp.Interfaces;
 using DirectoryStructureApp.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace DirectoryStructureApp.Repositories
 {
@@ -14,63 +13,25 @@ namespace DirectoryStructureApp.Repositories
             _context = context;
         }
 
-
-        public async Task<List<MyCatalog>> GetChildrenByIdAsync(int parentId)
+        public void AddListCatalogs(List<MyCatalog> catalogs)
         {
-            var children = await _context.MyCatalogs.Where(c => c.MyCatalogId == parentId).ToListAsync();
-            return children;
-        }
-
-        /*
-        public async Task<IEnumerable<MyCatalog>> GetParentAndChildrenCatalogsAsync()
-        {
-            var parentCatalogs = await _context.MyCatalogs.Where(c => c.MyCatalogId == null).ToListAsync();
-            var allCatalogs = await _context.MyCatalogs.ToListAsync();
-
-            foreach (var parentCatalog in parentCatalogs)
+            foreach (var catalog in catalogs)
             {
-                parentCatalog.Children = allCatalogs.Where(c => c.MyCatalogId == parentCatalog.Id).ToList();
+                _context.MyCatalogs.Add(catalog);
             }
 
-            return parentCatalogs;
+            _context.SaveChanges();
         }
-        */
-
-
-        //------------------------------
-        /*
-        public async Task<List<MyCatalog>> GetAllMyCatalogsAsync()
+        public List<MyCatalog> GetAll()
         {
-            return await _context.MyCatalogs.ToListAsync();
+            return _context.MyCatalogs.ToList();
         }
 
-        public async Task<MyCatalog> GetMyCatalogByIdAsync(int id)
+        public void DeleteAllMyCatalogs()
         {
-            return await _context.MyCatalogs.FindAsync(id);
+            var allCatalogs = _context.MyCatalogs.ToList();
+            _context.MyCatalogs.RemoveRange(allCatalogs);
+            _context.SaveChanges();
         }
-
-        public async Task AddMyCatalogAsync(MyCatalog myCatalog)
-        {
-            _context.MyCatalogs.Add(myCatalog);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task UpdateMyCatalogAsync(MyCatalog myCatalog)
-        {
-            _context.MyCatalogs.Update(myCatalog);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteMyCatalogAsync(MyCatalog myCatalog)
-        {
-            _context.MyCatalogs.Remove(myCatalog);
-            await _context.SaveChangesAsync();
-        }
-
-        public bool MyCatalogExists(int id)
-        {
-            return _context.MyCatalogs.Any(e => e.Id == id);
-        }
-        */
     }
 }
