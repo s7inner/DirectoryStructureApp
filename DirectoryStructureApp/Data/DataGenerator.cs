@@ -5,12 +5,11 @@ namespace DirectoryStructureApp.Data
 {
     public class DataGenerator
     {
-        public static void InitCatalog(IServiceProvider serviceProvider)
+        public static async Task InitCatalogAsync(IServiceProvider serviceProvider)
         {
             using (var context = new CatalogDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<CatalogDbContext>>()))
             {
-                // Look for any existing data.
                 if (context.MyCatalogs.Any())
                 {
                     return;   // DB has been seeded
@@ -49,9 +48,10 @@ namespace DirectoryStructureApp.Data
                     }
                 }
 
-                context.SaveChanges();
+                await context.SaveChangesAsync();
             }
         }
     }
+
 
 }

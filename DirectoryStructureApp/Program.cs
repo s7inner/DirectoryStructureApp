@@ -53,11 +53,11 @@ using (var scope = app.Services.CreateScope())
     try
     {
         var context = serviceProvider.GetRequiredService<CatalogDbContext>();
-        DataGenerator.InitCatalog(serviceProvider); 
+        await DataGenerator.InitCatalogAsync(serviceProvider); // зміни тут
     }
     catch (Exception ex)
     {
-        // log the error
+        Console.WriteLine($"An error occurred: {ex.Message}");
     }
 }
 
