@@ -9,6 +9,7 @@
 ![image](https://github.com/s7inner/DirectoryStructureApp/assets/62800741/632fc861-4b89-49e7-a233-c758dbcb6314)
 
 Структура проекту:
-![image](https://github.com/s7inner/DirectoryStructureApp/assets/62800741/c59b24c2-3284-44d2-8516-da28b710d6ac)
+![Uploading image.png…]()
+
 
 
