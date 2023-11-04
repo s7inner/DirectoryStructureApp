@@ -11,3 +11,41 @@
         <li><h2><a href="@Url.Action("Details", "MyCatalogs", new { id = childCatalog.Id })">@childCatalog.Name</a></h2></li>
     }
 </ul>
+
+<form action="/MyCatalogs/DeleteAllCatalogs" method="post" enctype="multipart/form-data">
+    <label for="file">Видалити всі наявні каталоги в базі даних - </label>
+    <button type="submit">DeleteDataFromDb</button>
+</form>
+
+<label for="file">Зберегти ієрархію каталогів з БД в JSON-файл - </label>
+<button onclick="saveDirectory()">SaveToJSON</button>
+<br></br>
+
+
+<form action="/MyCatalogs/ImportDataFromJsonFile" method="post" enctype="multipart/form-data">
+    <label for="file">Імпртувати ієрархію каталогів з JSON-файлу в БД - </label>
+    <input type="file" name="file" />
+    <input type="submit" value="Upload">
+</form>
+
+
+<script>
+    function saveDirectory() {
+        var selectedDirectoryPath = prompt("Будь ласка, введіть шлях до директорії:");
+        if (selectedDirectoryPath != null) {
+            fetch('MyCatalogs/SaveMyCatalogsToJsonFile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ selectedDirectoryPath: selectedDirectoryPath }),
+            })
+                .then(() => {
+                    alert("Файл успішно збережений.");
+                })
+                .catch((error) => {
+                    console.error('Помилка:', error);
+                });
+        }
+    }
+</script>

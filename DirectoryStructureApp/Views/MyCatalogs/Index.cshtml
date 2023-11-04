@@ -6,29 +6,35 @@
 
 @foreach (var catalog in Model)
 {
-    <h1>"Folder" - @catalog.Name</h1>
-    <ul>
-        @foreach (var childCatalog in catalog.Children)
-        {
-            <li><h2><a href="@Url.Action("Details", "MyCatalogs", new { id = childCatalog.Id })">@childCatalog.Name</a></h2></li>
-        }
-    </ul>
+    <div style="margin-bottom: 20px;">
+        <h1>Folder - @catalog.Name</h1>
+        <ul>
+            @foreach (var childCatalog in catalog.Children)
+            {
+                <li>
+                    <h2><a href="@Url.Action("Details", "MyCatalogs", new { id = childCatalog.Id })">@childCatalog.Name</a></h2>
+                </li>
+            }
+        </ul>
+    </div>
 }
 
 <form action="/MyCatalogs/DeleteAllCatalogs" method="post" enctype="multipart/form-data">
-    <button type="submit">DeleteAllCatalogs</button>
+    <label for="file">Видалити всі наявні каталоги в базі даних - </label>
+    <button type="submit">DeleteDataFromDb</button>
 </form>
+
+<label for="file">Зберегти ієрархію каталогів з БД в JSON-файл - </label>
+<button onclick="saveDirectory()">SaveToJSON</button>
+<br></br>
+
 
 <form action="/MyCatalogs/ImportDataFromJsonFile" method="post" enctype="multipart/form-data">
+    <label for="file">Імпртувати ієрархію каталогів з JSON-файлу в БД - </label>
     <input type="file" name="file" />
-    <input type="submit" value="Upload" />
+    <input type="submit" value="Upload">
 </form>
 
-<form action="/MyCatalogs/SaveMyCatalogsToJsonFile" method="post" enctype="multipart/form-data">
-    <button type="submit">SaveToJson</button>
-</form>
-
-<button onclick="saveDirectory()">Зберегти</button>
 
 <script>
     function saveDirectory() {
@@ -50,5 +56,3 @@
         }
     }
 </script>
-
-
