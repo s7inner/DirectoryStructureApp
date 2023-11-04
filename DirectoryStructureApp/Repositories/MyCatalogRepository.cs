@@ -43,7 +43,19 @@ namespace DirectoryStructureApp.Repositories
 
         public async Task<MyCatalog> GetCatalogByIdAsync(int id)
         {
-            return await _context.MyCatalogs.Include(c => c.Children).FirstOrDefaultAsync(c => c.Id == id);
+            try
+            {
+                var result = await _context.MyCatalogs.Include(c => c.Children).FirstOrDefaultAsync(c => c.Id == id);
+
+                if (result == null) throw new InvalidOperationException($"Record with id {id} not found.");
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                throw new InvalidOperationException("Error accessing data", ex);
+            }
         }
     }
 }

@@ -71,8 +71,17 @@ namespace DirectoryStructureApp.Services
                     // Десеріалізація JSON-даних в об'єкт або колекцію об'єктів
                     var catalogs = JsonConvert.DeserializeObject<List<MyCatalog>>(jsonString);
 
-                    // Збереження отриманих даних в базі даних
-                    await _myCatalogRepository.AddListCatalogsAsync(catalogs);
+                    // Перевірка на null перед передачею аргументу 'catalogs' до методу 'AddListCatalogsAsync'
+                    if (catalogs != null)
+                    {
+                        // Збереження отриманих даних в базі даних
+                        await _myCatalogRepository.AddListCatalogsAsync(catalogs);
+                    }
+                    else
+                    {
+                        // Якщо 'catalogs' є нульовим, ви можете вибрати певну дію або викинути виняток
+                        throw new Exception("The deserialized catalog list is null");
+                    }
                 }
                 catch (Exception ex)
                 {
