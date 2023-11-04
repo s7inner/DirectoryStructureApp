@@ -5,6 +5,8 @@ using DirectoryStructureApp.Models;
 using DirectoryStructureApp.Interfaces;
 using Newtonsoft.Json;
 using System.Text;
+using Newtonsoft.Json.Linq;
+using System.Text.RegularExpressions;
 
 namespace DirectoryStructureApp.Controllers
 {
@@ -21,13 +23,20 @@ namespace DirectoryStructureApp.Controllers
             _myCatalogRepository = myCatalogRepository;
         }
 
+
+
+
         [HttpPost]
         [Route("MyCatalogs/SaveMyCatalogsToJsonFile")]
-        public async Task<IActionResult> SaveFile(string filePath)
+        public async Task<IActionResult> SaveFile()
         {
-            await _jsonFileService.SaveMyCatalogsToJsonFile(filePath);
-            return RedirectToAction("Index");
+            using (StreamReader reader = new StreamReader(Request.Body))
+            {
+                var body = await reader.ReadToEndAsync();
+                return await _jsonFileService.SaveMyCatalogsToJsonFile(body);
+            }
         }
+
 
         [HttpPost]
         [Route("MyCatalogs/ImportDataFromJsonFile")]

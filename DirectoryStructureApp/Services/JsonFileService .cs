@@ -1,6 +1,8 @@
 ﻿using DirectoryStructureApp.Interfaces;
 using DirectoryStructureApp.Models;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace DirectoryStructureApp.Services
 {
@@ -14,21 +16,33 @@ namespace DirectoryStructureApp.Services
             _myCatalogRepository = myCatalogRepository;
         }
 
-        public async Task SaveMyCatalogsToJsonFile(string fileName)
+        public async Task<IActionResult> SaveMyCatalogsToJsonFile(string body)
         {
-            var myCatalogs = _myCatalogRepository.GetAll();
+            try
+            {
+                JObject jsonObject = JObject.Parse(body);
+                string selectedDirectoryPath = jsonObject["selectedDirectoryPath"].ToString();
 
-            var parentCatalogs = myCatalogs.Where(c => c.MyCatalogId == null).ToList();
+                if (string.IsNullOrEmpty(selectedDirectoryPath))
+                {
+                    return new BadRequestObjectResult("Шлях до директорії порожній.");
+                }
 
-            var result = parentCatalogs.Select(c => GetCatalogTree(c, myCatalogs)).ToList();
+                var myCatalogs = _myCatalogRepository.GetAll();
+                var parentCatalogs = myCatalogs.Where(c => c.MyCatalogId == null).ToList();
+                var result = parentCatalogs.Select(c => GetCatalogTree(c, myCatalogs)).ToList();
+                var serializedCatalogs = JsonConvert.SerializeObject(result, Formatting.Indented);
 
-            var serializedCatalogs = JsonConvert.SerializeObject(result, Formatting.Indented);
+                var path = Path.Combine(selectedDirectoryPath, "output.json");
+                File.WriteAllText(path, serializedCatalogs);
 
-            // Визначення шляху до файлу в проекті
-            var path = Path.Combine(Environment.CurrentDirectory, "output.txt");
-
-            // Запис серіалізованих даних у файл
-            File.WriteAllText(path, serializedCatalogs);
+                return new OkResult();
+            }
+            catch (Exception ex)
+            {
+                // Обробка будь-яких винятків, які можуть виникнути
+                return new ObjectResult("Сталася помилка: " + ex.Message) { StatusCode = 500 };
+            }
         }
 
         //Забирає поле Id в JSON файлі на вихід, оскільки при імпорті не потрібні

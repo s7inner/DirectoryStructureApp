@@ -27,3 +27,28 @@
 <form action="/MyCatalogs/SaveMyCatalogsToJsonFile" method="post" enctype="multipart/form-data">
     <button type="submit">SaveToJson</button>
 </form>
+
+<button onclick="saveDirectory()">Зберегти</button>
+
+<script>
+    function saveDirectory() {
+        var selectedDirectoryPath = prompt("Будь ласка, введіть шлях до директорії:");
+        if (selectedDirectoryPath != null) {
+            fetch('MyCatalogs/SaveMyCatalogsToJsonFile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ selectedDirectoryPath: selectedDirectoryPath }),
+            })
+                .then(() => {
+                    alert("Файл успішно збережений.");
+                })
+                .catch((error) => {
+                    console.error('Помилка:', error);
+                });
+        }
+    }
+</script>
+
+
