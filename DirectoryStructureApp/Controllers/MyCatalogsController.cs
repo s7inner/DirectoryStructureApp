@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using DirectoryStructureApp.Data;
 using DirectoryStructureApp.Interfaces;
 
@@ -48,7 +47,6 @@ namespace DirectoryStructureApp.Controllers
             }
         }
 
-
         [HttpPost]
         [Route("MyCatalogs/DeleteAllCatalogsAsync")]
         public async Task<IActionResult> DeleteAllCatalogsAsync()
@@ -59,10 +57,9 @@ namespace DirectoryStructureApp.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var topLevelCatalogs = await _context.MyCatalogs.Where(c => c.MyCatalogId == null).Include(c => c.Children).ToListAsync();
-            return View(topLevelCatalogs);
+            var rootCatalog = await _myCatalogRepository.GetRootCatalogAsync();
+            return View(rootCatalog);
         }
-
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -70,7 +67,7 @@ namespace DirectoryStructureApp.Controllers
                 return NotFound();
             }
 
-            var catalog = await _context.MyCatalogs.Include(c => c.Children).FirstOrDefaultAsync(c => c.Id == id);
+            var catalog = await _myCatalogRepository.GetCatalogByIdAsync(id.Value);
             if (catalog == null)
             {
                 return NotFound();
@@ -78,6 +75,7 @@ namespace DirectoryStructureApp.Controllers
 
             return View(catalog);
         }
+
     }
 
 }

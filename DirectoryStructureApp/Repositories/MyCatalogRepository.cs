@@ -35,5 +35,15 @@ namespace DirectoryStructureApp.Repositories
             _context.MyCatalogs.RemoveRange(allCatalogs);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<MyCatalog>> GetRootCatalogAsync()
+        {
+            return await _context.MyCatalogs.Where(c => c.MyCatalogId == null).Include(c => c.Children).ToListAsync();
+        }
+
+        public async Task<MyCatalog> GetCatalogByIdAsync(int id)
+        {
+            return await _context.MyCatalogs.Include(c => c.Children).FirstOrDefaultAsync(c => c.Id == id);
+        }
     }
 }
