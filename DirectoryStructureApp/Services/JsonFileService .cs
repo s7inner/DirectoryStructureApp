@@ -55,7 +55,7 @@ namespace DirectoryStructureApp.Services
             };
         }
 
-        public void ImportDataFromJsonFile(IFormFile file)
+        public async Task ImportDataFromJsonFileAsync(IFormFile file)
         {
             if (file == null || file.Length == 0)
             {
@@ -64,7 +64,7 @@ namespace DirectoryStructureApp.Services
 
             using (var reader = new StreamReader(file.OpenReadStream()))
             {
-                var jsonString = reader.ReadToEnd();
+                var jsonString = await reader.ReadToEndAsync();
 
                 try
                 {
@@ -72,7 +72,7 @@ namespace DirectoryStructureApp.Services
                     var catalogs = JsonConvert.DeserializeObject<List<MyCatalog>>(jsonString);
 
                     // Збереження отриманих даних в базі даних
-                    _myCatalogRepository.AddListCatalogsAsync(catalogs);
+                    await _myCatalogRepository.AddListCatalogsAsync(catalogs);
                 }
                 catch (Exception ex)
                 {
@@ -80,5 +80,6 @@ namespace DirectoryStructureApp.Services
                 }
             }
         }
+
     }
 }

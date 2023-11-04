@@ -19,7 +19,7 @@
     </div>
 }
 
-<form action="/MyCatalogs/DeleteAllCatalogs" method="post" enctype="multipart/form-data">
+<form action="/MyCatalogs/DeleteAllCatalogsAsync" method="post" enctype="multipart/form-data">
     <label for="file">Видалити всі наявні каталоги в базі даних - </label>
     <button type="submit">DeleteDataFromDb</button>
 </form>
@@ -29,7 +29,7 @@
 <br></br>
 
 
-<form action="/MyCatalogs/ImportDataFromJsonFile" method="post" enctype="multipart/form-data">
+<form action="/MyCatalogs/ImportDataFromJsonFileAsync" method="post" enctype="multipart/form-data">
     <label for="file">Імпртувати ієрархію каталогів з JSON-файлу в БД - </label>
     <input type="file" name="file" />
     <input type="submit" value="Upload">

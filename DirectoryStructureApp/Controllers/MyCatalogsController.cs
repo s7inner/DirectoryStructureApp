@@ -29,14 +29,13 @@ namespace DirectoryStructureApp.Controllers
             }
         }
 
-
         [HttpPost]
-        [Route("MyCatalogs/ImportDataFromJsonFile")]
-        public IActionResult ImportDataFromJsonFile(IFormFile file)
+        [Route("MyCatalogs/ImportDataFromJsonFileAsync")]
+        public async Task<IActionResult> ImportDataFromJsonFileAsync(IFormFile file)
         {
             try
             {
-                _jsonFileService.ImportDataFromJsonFile(file);
+                await _jsonFileService.ImportDataFromJsonFileAsync(file);
                 return RedirectToAction("Index");
             }
             catch (ArgumentNullException ex)
@@ -51,36 +50,27 @@ namespace DirectoryStructureApp.Controllers
 
 
         [HttpPost]
-        [Route("MyCatalogs/DeleteAllCatalogs")]
-        public async Task<IActionResult> DeleteAllCatalogs()
+        [Route("MyCatalogs/DeleteAllCatalogsAsync")]
+        public async Task<IActionResult> DeleteAllCatalogsAsync()
         {
             await _myCatalogRepository.DeleteAllMyCatalogsAsync();
             return RedirectToAction("Index"); // Направлення на метод "Index" або іншу відповідну дію
         }
 
-        [HttpPost]
-        [Route("MyCatalogs/ImportDataFromJson")]
-        public IActionResult ImportDataFromJson(IFormFile file)
+        public async Task<IActionResult> Index()
         {
-            return null;
-        }
-
-
-       
-        public IActionResult Index()
-        {
-            var topLevelCatalogs = _context.MyCatalogs.Where(c => c.MyCatalogId == null).Include(c => c.Children).ToList();
+            var topLevelCatalogs = await _context.MyCatalogs.Where(c => c.MyCatalogId == null).Include(c => c.Children).ToListAsync();
             return View(topLevelCatalogs);
         }
 
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
                 return NotFound();
             }
 
-            var catalog = _context.MyCatalogs.Include(c => c.Children).FirstOrDefault(c => c.Id == id);
+            var catalog = await _context.MyCatalogs.Include(c => c.Children).FirstOrDefaultAsync(c => c.Id == id);
             if (catalog == null)
             {
                 return NotFound();
