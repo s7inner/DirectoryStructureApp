@@ -16,7 +16,7 @@ namespace DirectoryStructureApp.Services
             _myCatalogRepository = myCatalogRepository;
         }
 
-        public async Task<IActionResult> SaveMyCatalogsToJsonFile(string body)
+        public async Task<IActionResult> SaveMyCatalogsToJsonFileAsync(string body)
         {
             try
             {
@@ -28,7 +28,7 @@ namespace DirectoryStructureApp.Services
                     return new BadRequestObjectResult("Шлях до директорії порожній.");
                 }
 
-                var myCatalogs = _myCatalogRepository.GetAll();
+                var myCatalogs = await _myCatalogRepository.GetAllAsync();
                 var parentCatalogs = myCatalogs.Where(c => c.MyCatalogId == null).ToList();
                 var result = parentCatalogs.Select(c => GetCatalogTree(c, myCatalogs)).ToList();
                 var serializedCatalogs = JsonConvert.SerializeObject(result, Formatting.Indented);
@@ -40,7 +40,6 @@ namespace DirectoryStructureApp.Services
             }
             catch (Exception ex)
             {
-                // Обробка будь-яких винятків, які можуть виникнути
                 return new ObjectResult("Сталася помилка: " + ex.Message) { StatusCode = 500 };
             }
         }
@@ -60,7 +59,6 @@ namespace DirectoryStructureApp.Services
         {
             if (file == null || file.Length == 0)
             {
-                // Обробка помилки, якщо файл не було вибрано
                 throw new ArgumentNullException("File not selected");
             }
 
@@ -74,11 +72,10 @@ namespace DirectoryStructureApp.Services
                     var catalogs = JsonConvert.DeserializeObject<List<MyCatalog>>(jsonString);
 
                     // Збереження отриманих даних в базі даних
-                    _myCatalogRepository.AddListCatalogs(catalogs);
+                    _myCatalogRepository.AddListCatalogsAsync(catalogs);
                 }
                 catch (Exception ex)
                 {
-                    // Обробка помилки десеріалізації або збереження в базі даних
                     throw new Exception($"Error: {ex.Message}");
                 }
             }

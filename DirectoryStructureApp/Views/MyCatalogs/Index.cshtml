@@ -40,7 +40,7 @@
     function saveDirectory() {
         var selectedDirectoryPath = prompt("Будь ласка, введіть шлях до директорії:");
         if (selectedDirectoryPath != null) {
-            fetch('MyCatalogs/SaveMyCatalogsToJsonFile', {
+            fetch('MyCatalogs/SaveMyCatalogsToJsonFileAsync', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -1,10 +1,11 @@
 ﻿using DirectoryStructureApp.Data;
 using DirectoryStructureApp.Interfaces;
 using DirectoryStructureApp.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace DirectoryStructureApp.Repositories
 {
-    public class MyCatalogRepository: IMyCatalogRepository
+    public class MyCatalogRepository : IMyCatalogRepository
     {
         private readonly CatalogDbContext _context;
 
@@ -13,25 +14,26 @@ namespace DirectoryStructureApp.Repositories
             _context = context;
         }
 
-        public void AddListCatalogs(List<MyCatalog> catalogs)
+        public async Task AddListCatalogsAsync(List<MyCatalog> catalogs)
         {
             foreach (var catalog in catalogs)
             {
                 _context.MyCatalogs.Add(catalog);
             }
 
-            _context.SaveChanges();
-        }
-        public List<MyCatalog> GetAll()
-        {
-            return _context.MyCatalogs.ToList();
+            await _context.SaveChangesAsync();
         }
 
-        public void DeleteAllMyCatalogs()
+        public async Task<List<MyCatalog>> GetAllAsync()
         {
-            var allCatalogs = _context.MyCatalogs.ToList();
+            return await _context.MyCatalogs.ToListAsync();
+        }
+
+        public async Task DeleteAllMyCatalogsAsync()
+        {
+            var allCatalogs = await _context.MyCatalogs.ToListAsync();
             _context.MyCatalogs.RemoveRange(allCatalogs);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }

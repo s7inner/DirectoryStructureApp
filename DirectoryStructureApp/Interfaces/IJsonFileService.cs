@@ -5,7 +5,7 @@ namespace DirectoryStructureApp.Interfaces
     public interface IJsonFileService
     {
         void ImportDataFromJsonFile(IFormFile file);
-        Task<IActionResult> SaveMyCatalogsToJsonFile(string body);
+        Task<IActionResult> SaveMyCatalogsToJsonFileAsync(string body);
     }
 
 }
